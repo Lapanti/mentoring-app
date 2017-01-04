@@ -1,6 +1,6 @@
 module.exports = {
   entry: {
-    app: './src/app.ts',
+    app: './src/client/app.ts',
     vendor: [
       'babel-polyfill'
     ]
@@ -31,7 +31,7 @@ module.exports = {
   plugins: [
   ],
   devServer: {
-    contentBase: __dirname + "/src",
+    contentBase: __dirname + "/src/client",
     hot: true
   }
 };
