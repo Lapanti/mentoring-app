@@ -9,21 +9,22 @@ import buffer from 'vinyl-buffer';
 import del from 'del';
 
 gulp.task('clean', () => del([
-  'public/assets',
-  'public/server',
+  'dist/public/assets',
+  'dist/*.js',
+  'dist/*.d.ts',
   'build',
 ]));
 
 gulp.task('build:client', () => (
   gulp.src('src/client/**/*.ts')
-    .pipe(typescript())
+    .pipe(typescript.createProject('tsconfig.json')())
     .pipe(gulp.dest('build/client'))
 ));
 
 gulp.task('build:server', () => (
   gulp.src('src/server/**/*.ts')
-    .pipe(typescript())
-    .pipe(gulp.dest('public/server'))
+    .pipe(typescript.createProject('tsconfig.json')())
+    .pipe(gulp.dest('dist'))
 ));
 
 gulp.task('bundle:client', ['build:client'], () => {
@@ -33,18 +34,19 @@ gulp.task('bundle:client', ['build:client'], () => {
     .pipe(buffer())
     .pipe(sourcemaps.init({ loadMaps: true }))
     .pipe(sourcemaps.write('./'))
-    .pipe(gulp.dest('public/assets'))
+    .pipe(gulp.dest('dist/public/assets/js'))
 });
 
 gulp.task('serve:server', ['build:server'], () => (
   nodemon({
-    script: 'public/server/server.js',
+    script: 'dist/server.js',
     env: { NODE_ENV: 'development' },
     watch: ['src/server'],
+    ext: 'ts',
     tasks: ['build:server'],
   }).on('restart', () => {
     setTimeout(() => {
-      livereload.changed('public/server/server.js');
+      livereload.changed('dist/server.js');
     }, 1000);
   })
 ));

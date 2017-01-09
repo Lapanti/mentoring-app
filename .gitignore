@@ -1,5 +1,6 @@
-public/server
-public/assets
+dist/*.js
+dist/*.d.ts
+dist/public/assets
 build
 
 # Logs
