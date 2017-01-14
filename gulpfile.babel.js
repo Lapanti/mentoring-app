@@ -10,8 +10,8 @@ import del from 'del';
 
 gulp.task('clean', () => del([
   'dist/public/assets',
-  'dist/*.js',
-  'dist/*.d.ts',
+  'dist/**/*.js',
+  'dist/**/*.d.ts',
   'build',
 ]));
 
@@ -24,7 +24,7 @@ gulp.task('build:client', () => (
 gulp.task('build:server', () => (
   gulp.src('src/server/**/*.ts')
     .pipe(typescript.createProject('tsconfig.json')())
-    .pipe(gulp.dest('dist'))
+    .pipe(gulp.dest('dist/server'))
 ));
 
 gulp.task('bundle:client', ['build:client'], () => {
@@ -39,14 +39,14 @@ gulp.task('bundle:client', ['build:client'], () => {
 
 gulp.task('serve:server', ['build:server'], () => (
   nodemon({
-    script: 'dist/server.js',
+    script: 'dist/server/server.js',
     env: { NODE_ENV: 'development' },
     watch: ['src/server'],
     ext: 'ts',
     tasks: ['build:server'],
   }).on('restart', () => {
     setTimeout(() => {
-      livereload.changed('dist/server.js');
+      livereload.changed('dist/server/server.js');
     }, 1000);
   })
 ));
